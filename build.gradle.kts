@@ -2,7 +2,6 @@ plugins {
     kotlin("jvm") version "1.6.10"
     id("io.papermc.paperweight.userdev") version "1.3.4"
     `maven-publish`
-    `java-library`
 }
 
 group = "com.github.devngho"
