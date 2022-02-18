@@ -24,18 +24,11 @@ tasks {
     assemble {
         dependsOn(reobfJar)
     }
-    reobfJar {
-        outputJar.set(layout.buildDirectory.file("libs/nplug-${project.version}.jar"))
-    }
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = project.group as String
-            artifactId = "nplug"
-            version = project.version as String
-
             from(components["kotlin"])
         }
     }
