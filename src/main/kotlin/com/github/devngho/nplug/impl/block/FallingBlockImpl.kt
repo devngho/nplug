@@ -48,7 +48,7 @@ class FallingBlockImpl internal constructor(
                     (player as CraftPlayer).handle.connection.send(packet)
                 }
             }else {
-                val packet = ClientboundSetEntityDataPacket(entity.id, entity.entityData, false)
+                val packet = ClientboundSetEntityDataPacket(entity.id, entity.entityData, true)
                 for (player in Bukkit.getOnlinePlayers()) {
                     (player as CraftPlayer).handle.connection.send(packet)
                 }
