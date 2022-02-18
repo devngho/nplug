@@ -2,6 +2,8 @@ package com.github.devngho.nplug.impl.block
 
 import com.github.devngho.nplug.api.block.FallingBlock
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.FallingBlockEntity
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -28,12 +30,29 @@ class FallingBlockImpl internal constructor(
         entity.isNoGravity = true
         entity.isInvulnerable = true
         entity.dropItem = false
-        val packet = ClientboundAddEntityPacket(entity)
+        entity.time = 1
+        val spawnPacket = ClientboundAddEntityPacket(entity)
         for (player in Bukkit.getOnlinePlayers()) {
-            (player as CraftPlayer).handle.connection.send(packet)
+            (player as CraftPlayer).handle.connection.send(spawnPacket)
         }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
-
+            entity.time = 1
+            entity.setPos(position.x, position.y, position.z)
+            if (material != entity.blockState.bukkitMaterial){
+                entity.remove(Entity.RemovalReason.KILLED)
+                entity = FallingBlockEntity(
+                    (position.world as CraftWorld).handle, position.x, position.y, position.z, CraftMagicNumbers.getBlock(material).defaultBlockState()
+                )
+                val packet = ClientboundAddEntityPacket(entity)
+                for (player in Bukkit.getOnlinePlayers()) {
+                    (player as CraftPlayer).handle.connection.send(packet)
+                }
+            }else {
+                val packet = ClientboundSetEntityDataPacket(entity.id, entity.entityData, false)
+                for (player in Bukkit.getOnlinePlayers()) {
+                    (player as CraftPlayer).handle.connection.send(packet)
+                }
+            }
         }, 0, 1)
     }
 }
