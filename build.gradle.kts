@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.devngho"
-version = "v0.1-alpha1"
+version = "v0.1-alpha0"
 
 repositories {
     mavenCentral()
@@ -27,18 +27,8 @@ tasks {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-            }
-        }
-    }
     publications {
-        register<MavenPublication>("gpr") {
+        create<MavenPublication>("maven") {
             from(components["kotlin"])
         }
     }
