@@ -24,6 +24,9 @@ tasks {
     assemble {
         dependsOn(reobfJar)
     }
+    jar {
+        archiveFileName.set("nplug-${this.project.version}.jar")
+    }
 }
 
 publishing {
