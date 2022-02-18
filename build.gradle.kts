@@ -28,6 +28,7 @@ tasks {
         dependsOn(reobfJar)
     }
     reobfJar{
+        inputJar.set(file(project.buildDir.absolutePath + File.separator + "/libs/${project.name}-${project.version}.jar"))
         outputJar.set(file(project.buildDir.absolutePath + File.separator + "/libs/${project.name}-${project.version}.jar"))
     }
 }
