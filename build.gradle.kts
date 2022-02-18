@@ -21,8 +21,14 @@ java {
 }
 
 tasks {
+    jar {
+        this.archiveFileName.set("${project.name}-${project.version}.jar")
+    }
     assemble {
         dependsOn(reobfJar)
+    }
+    reobfJar{
+        outputJar.set(file(project.buildDir.absolutePath + File.separator + "/libs/${project.name}-${project.version}.jar"))
     }
 }
 
