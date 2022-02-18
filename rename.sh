@@ -1,1 +1,0 @@
-rename ./build/libs/plug-"$VERSION"-dev ./build/libs/plug-"$VERSION" ./build/libs/plug-"$VERSION"-dev
