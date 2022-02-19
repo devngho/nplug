@@ -2,7 +2,6 @@ package com.github.devngho.nplug.impl.block
 
 import com.github.devngho.nplug.api.block.FallingBlock
 import com.github.devngho.nplug.api.block.FallingBlocks
-import com.github.devngho.nplug.api.structure.Structure
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.plugin.java.JavaPlugin
@@ -17,12 +16,6 @@ class FallingBlocksImpl internal constructor(
         fun createFallingBlocks(fallingBlock: MutableList<Pair<Vector, FallingBlock>>, position: Location, javaPlugin: JavaPlugin): FallingBlocks {
             return FallingBlocksImpl(fallingBlock, position, javaPlugin)
         }
-        fun createFallingBlocks(structure: Structure, position: Location, javaPlugin: JavaPlugin): FallingBlocks {
-            val fallingBlocks = structure.blocks.map {
-                Pair(it.first, FallingBlock.createFallingBlock(it.second, position, javaPlugin))
-            }.toMutableList()
-            return createFallingBlocks(fallingBlocks, position, javaPlugin)
-        }
     }
     init {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(javaPlugin, {
@@ -35,5 +28,10 @@ class FallingBlocksImpl internal constructor(
                 Pair(it.first, it.second)
             }.toMutableList()
         }, 0, 1)
+    }
+    override fun remove() {
+        fallingBlocks.forEach {
+            it.second.remove()
+        }
     }
 }
