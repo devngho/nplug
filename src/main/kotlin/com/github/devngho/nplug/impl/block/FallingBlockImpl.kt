@@ -76,5 +76,6 @@ class FallingBlockImpl internal constructor(
         for (player in Bukkit.getOnlinePlayers()) {
             (player as CraftPlayer).handle.connection.send(removePacket)
         }
+        if (collidable) shulkerEntity!!.remove()
     }
 }
