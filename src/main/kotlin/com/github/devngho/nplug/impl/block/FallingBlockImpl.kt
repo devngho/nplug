@@ -21,7 +21,7 @@ class FallingBlockImpl internal constructor(
 ) : FallingBlock {
     private var entity: FallingBlockEntity =
         FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state)
-    private var shulkerEntity: Shulker = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
+    private var shulkerEntity: Shulker? = null
     private var taskID: Int
 
     companion object{
@@ -33,10 +33,13 @@ class FallingBlockImpl internal constructor(
         entity.isNoGravity = true
         entity.isInvulnerable = true
         entity.dropItem = false
-        shulkerEntity.setGravity(false)
-        shulkerEntity.isInvulnerable = true
-        shulkerEntity.setAI(false)
-        shulkerEntity.isInvisible = true
+        if (collidable){
+            shulkerEntity = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
+            shulkerEntity!!.setGravity(false)
+            shulkerEntity!!.isInvulnerable = true
+            shulkerEntity!!.setAI(false)
+            shulkerEntity!!.isInvisible = true
+        }
         for (player in Bukkit.getOnlinePlayers()) {
             (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
         }
@@ -45,7 +48,7 @@ class FallingBlockImpl internal constructor(
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(removePacket)
             }
-            shulkerEntity.remove()
+            if (collidable) shulkerEntity!!.remove()
             entity = FallingBlockEntity(
                 (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
             )
@@ -53,10 +56,12 @@ class FallingBlockImpl internal constructor(
             entity.isNoGravity = true
             entity.isInvulnerable = true
             entity.dropItem = false
-            shulkerEntity.setGravity(false)
-            shulkerEntity.isInvulnerable = true
-            shulkerEntity.setAI(false)
-            shulkerEntity.isInvisible = true
+            if (collidable) {
+                shulkerEntity!!.setGravity(false)
+                shulkerEntity!!.isInvulnerable = true
+                shulkerEntity!!.setAI(false)
+                shulkerEntity!!.isInvisible = true
+            }
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
             }
