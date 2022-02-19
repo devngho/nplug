@@ -32,17 +32,15 @@ class FallingBlockImpl internal constructor(
             (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
         }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
-            if (material != entity.blockState.bukkitMaterial){
-                entity.remove(Entity.RemovalReason.KILLED)
-                entity = FallingBlockEntity(
-                    (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
-                )
-                entity.isNoGravity = true
-                entity.isInvulnerable = true
-                entity.dropItem = false
-                for (player in Bukkit.getOnlinePlayers()) {
-                    (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
-                }
+            entity.remove(Entity.RemovalReason.KILLED)
+            entity = FallingBlockEntity(
+                (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
+            )
+            entity.isNoGravity = true
+            entity.isInvulnerable = true
+            entity.dropItem = false
+            for (player in Bukkit.getOnlinePlayers()) {
+                (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
             }
         }, 0, 1)
     }
