@@ -19,17 +19,8 @@ class FallingBlocksImpl internal constructor(
         }
         fun createFallingBlocks(structure: Structure, position: Location, javaPlugin: JavaPlugin): FallingBlocks {
             val fallingBlocks = structure.blocks.map {
-                val returnValue = mutableListOf<Pair<Vector, FallingBlock>>()
-                it.value.forEach { t ->
-                    t.value.forEach  { v ->
-                        returnValue.add(Pair(
-                            v.value.first,
-                            FallingBlock.createFallingBlock(v.value.second, position, javaPlugin)
-                        ))
-                    }
-                }
-                returnValue
-            }.flatten().toMutableList()
+                Pair(it.first, FallingBlock.createFallingBlock(it.second, position, javaPlugin))
+            }.toMutableList()
             return createFallingBlocks(fallingBlocks, position, javaPlugin)
         }
     }

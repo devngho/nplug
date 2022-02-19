@@ -11,9 +11,9 @@ interface Structure {
         fun createFrom(world: World, pos1: Location, pos2: Location, center: Location): Structure {
             return StructureImpl.createFrom(world, pos1, pos2, center)
         }
-        fun createFrom(blocks: MutableMap<Int, MutableMap<Int, MutableMap<Int, Pair<Vector, Material>>>>): Structure {
+        fun createFrom(blocks: MutableList<Pair<Vector, Material>>): Structure {
             return StructureImpl.createFrom(blocks)
         }
     }
-    val blocks: MutableMap<Int, MutableMap<Int, MutableMap<Int, Pair<Vector, Material>>>>
+    val blocks: MutableList<Pair<Vector, Material>>
 }
