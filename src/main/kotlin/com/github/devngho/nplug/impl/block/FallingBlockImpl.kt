@@ -52,7 +52,9 @@ class FallingBlockImpl internal constructor(
             entity = FallingBlockEntity(
                 (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
             )
-            shulkerEntity = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
+            if (collidable) {
+                shulkerEntity = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
+            }
             entity.isNoGravity = true
             entity.isInvulnerable = true
             entity.dropItem = false
