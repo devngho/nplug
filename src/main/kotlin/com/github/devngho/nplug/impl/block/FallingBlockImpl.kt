@@ -1,7 +1,8 @@
 package com.github.devngho.nplug.impl.block
 
 import com.github.devngho.nplug.api.block.FallingBlock
-import net.minecraft.world.entity.Entity
+import it.unimi.dsi.fastutil.ints.IntList
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.world.entity.item.FallingBlockEntity
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -32,7 +33,10 @@ class FallingBlockImpl internal constructor(
             (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
         }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
-            entity.remove(Entity.RemovalReason.KILLED)
+            val removePacket = ClientboundRemoveEntitiesPacket(IntList.of(entity.id))
+            for (player in Bukkit.getOnlinePlayers()) {
+                (player as CraftPlayer).handle.connection.send(removePacket)
+            }
             entity = FallingBlockEntity(
                 (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
             )
