@@ -1,7 +1,6 @@
 package com.github.devngho.nplug.impl.block
 
 import com.github.devngho.nplug.api.block.FallingBlock
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.FallingBlockEntity
@@ -9,8 +8,8 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld
+import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
 import org.bukkit.plugin.java.JavaPlugin
 
 class FallingBlockImpl internal constructor(
@@ -19,7 +18,7 @@ class FallingBlockImpl internal constructor(
     override val plugin: JavaPlugin
 ) : FallingBlock {
     private var entity: FallingBlockEntity =
-        FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, CraftMagicNumbers.getBlock(material).defaultBlockState())
+        FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state)
 
     companion object{
         fun createFallingBlock(material: Material, position: Location, plugin: JavaPlugin): FallingBlock {
@@ -30,10 +29,8 @@ class FallingBlockImpl internal constructor(
         entity.isNoGravity = true
         entity.isInvulnerable = true
         entity.dropItem = false
-        entity.time = 1
-        val spawnPacket = ClientboundAddEntityPacket(entity)
         for (player in Bukkit.getOnlinePlayers()) {
-            (player as CraftPlayer).handle.connection.send(spawnPacket)
+            (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
         }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
             entity.time = 1
@@ -41,11 +38,10 @@ class FallingBlockImpl internal constructor(
             if (material != entity.blockState.bukkitMaterial){
                 entity.remove(Entity.RemovalReason.KILLED)
                 entity = FallingBlockEntity(
-                    (position.world as CraftWorld).handle, position.x, position.y, position.z, CraftMagicNumbers.getBlock(material).defaultBlockState()
+                    (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
                 )
-                val packet = ClientboundAddEntityPacket(entity)
                 for (player in Bukkit.getOnlinePlayers()) {
-                    (player as CraftPlayer).handle.connection.send(packet)
+                    (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
                 }
             }else {
                 val packet = ClientboundSetEntityDataPacket(entity.id, entity.entityData, true)
