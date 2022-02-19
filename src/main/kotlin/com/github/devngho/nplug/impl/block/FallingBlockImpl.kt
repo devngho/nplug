@@ -45,6 +45,7 @@ class FallingBlockImpl internal constructor(
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(removePacket)
             }
+            shulkerEntity.remove()
             entity = FallingBlockEntity(
                 (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
             )
