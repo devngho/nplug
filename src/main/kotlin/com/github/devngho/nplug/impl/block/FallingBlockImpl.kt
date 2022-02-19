@@ -3,15 +3,14 @@ package com.github.devngho.nplug.impl.block
 import com.github.devngho.nplug.api.block.FallingBlock
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
-import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.FallingBlockEntity
-import net.minecraft.world.entity.monster.Shulker
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld
 import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer
+import org.bukkit.entity.Shulker
 import org.bukkit.plugin.java.JavaPlugin
 
 class FallingBlockImpl internal constructor(
@@ -22,7 +21,7 @@ class FallingBlockImpl internal constructor(
 ) : FallingBlock {
     private var entity: FallingBlockEntity =
         FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state)
-    private var shulkerEntity: Shulker = Shulker(EntityType.SHULKER, (position.world as CraftWorld).handle)
+    private var shulkerEntity: Shulker = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
     private var taskID: Int
 
     companion object{
@@ -34,35 +33,31 @@ class FallingBlockImpl internal constructor(
         entity.isNoGravity = true
         entity.isInvulnerable = true
         entity.dropItem = false
-        shulkerEntity.isNoGravity = true
+        shulkerEntity.setGravity(false)
         shulkerEntity.isInvulnerable = true
-        shulkerEntity.isNoAi = true
+        shulkerEntity.setAI(false)
         shulkerEntity.isInvisible = true
-        shulkerEntity.drops = arrayListOf()
         for (player in Bukkit.getOnlinePlayers()) {
             (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
-            player.handle.connection.send(shulkerEntity.addEntityPacket)
         }
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
-            val removePacket = ClientboundRemoveEntitiesPacket(IntList.of(entity.id, shulkerEntity.id))
+            val removePacket = ClientboundRemoveEntitiesPacket(IntList.of(entity.id))
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(removePacket)
             }
             entity = FallingBlockEntity(
                 (position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state
             )
-            shulkerEntity = Shulker(EntityType.SHULKER, (position.world as CraftWorld).handle)
+            shulkerEntity = position.world.spawn(position, org.bukkit.entity.Shulker::class.java)
             entity.isNoGravity = true
             entity.isInvulnerable = true
             entity.dropItem = false
-            shulkerEntity.isNoGravity = true
+            shulkerEntity.setGravity(false)
             shulkerEntity.isInvulnerable = true
-            shulkerEntity.isNoAi = true
+            shulkerEntity.setAI(false)
             shulkerEntity.isInvisible = true
-            shulkerEntity.drops = arrayListOf()
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
-                player.handle.connection.send(shulkerEntity.addEntityPacket)
             }
         }, 0, 1)
     }
