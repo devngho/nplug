@@ -4,7 +4,6 @@ import com.github.devngho.nplug.api.block.FallingBlock
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.world.entity.EntityType
-import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.entity.monster.Shulker
 import org.bukkit.Bukkit
@@ -21,7 +20,6 @@ class FallingBlockImpl internal constructor(
     override val plugin: JavaPlugin,
     override val collidable: Boolean
 ) : FallingBlock {
-    private var armorStand: ArmorStand = ArmorStand((position.world as CraftWorld).handle, position.x, position.y, position.z)
     private var entity: FallingBlockEntity =
         FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state)
     private var shulkerEntity: Shulker? = null
@@ -33,23 +31,17 @@ class FallingBlockImpl internal constructor(
         }
     }
     init {
-        armorStand.isMarker = true
-        armorStand.isInvisible = true
-        armorStand.isInvulnerable = true
         entity.isNoGravity = true
         entity.isInvulnerable = true
         entity.dropItem = false
-        entity.startRiding(armorStand, true)
         if (collidable){
             shulkerEntity = Shulker(EntityType.SHULKER, (position.world as CraftWorld).handle)
             shulkerEntity!!.isInvisible = true
             shulkerEntity!!.isInvulnerable = true
             shulkerEntity!!.isNoAi = true
-            shulkerEntity!!.startRiding(armorStand)
         }
         for (player in Bukkit.getOnlinePlayers()) {
             (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
-            player.handle.connection.send(armorStand.addEntityPacket)
             if (collidable) player.handle.connection.send(shulkerEntity!!.addEntityPacket)
         }
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
@@ -67,12 +59,12 @@ class FallingBlockImpl internal constructor(
                 shulkerEntity!!.isInvisible = true
                 shulkerEntity!!.isInvulnerable = true
                 shulkerEntity!!.isNoAi = true
-                shulkerEntity!!.startRiding(armorStand)
+                shulkerEntity!!.isNoGravity = true
             }
             entity.isNoGravity = true
+            entity.hurtEntities = false
             entity.isInvulnerable = true
             entity.dropItem = false
-            entity.startRiding(armorStand)
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(entity.addEntityPacket)
                 if (collidable) player.handle.connection.send(shulkerEntity!!.addEntityPacket)
