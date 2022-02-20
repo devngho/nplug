@@ -5,6 +5,7 @@ import com.github.devngho.nplug.impl.Setting
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.entity.monster.Shulker
@@ -78,6 +79,8 @@ class FallingBlockImpl internal constructor(
             for (player in Bukkit.getOnlinePlayers()) {
                 (player as CraftPlayer).handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
                 if (collidable) player.handle.connection.send(ClientboundSetEntityDataPacket(shulkerEntity!!.id, shulkerEntity!!.entityData, true))
+                player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
+                if (collidable) player.handle.connection.send(ClientboundTeleportEntityPacket(shulkerEntity!!))
             }
         }, 0, Setting.FallingRefreshTicks.toLong())
     }
