@@ -86,4 +86,19 @@ class FallingBlockImpl internal constructor(
         sentPlayers.clear()
         sendPlayers.forEach { sentPlayers.add(it) }
     }
+
+    override fun refreshPlayersForce() {
+        sendPlayers.forEach {
+            (it as CraftPlayer).handle.connection.send(entity.addEntityPacket)
+            if (collidable) it.handle.connection.send(shulkerEntity!!.addEntityPacket)
+        }
+        val list = IntList.of(entity.id)
+        if (collidable) list.add(shulkerEntity!!.id)
+        val removePacket = ClientboundRemoveEntitiesPacket(list)
+        sendPlayers.forEach {
+            (it as CraftPlayer).handle.connection.send(removePacket)
+        }
+        sentPlayers.clear()
+        sendPlayers.forEach { sentPlayers.add(it) }
+    }
 }

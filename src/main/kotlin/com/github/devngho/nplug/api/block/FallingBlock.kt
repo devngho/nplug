@@ -41,8 +41,6 @@ interface FallingBlock {
     val sendPlayers: MutableList<Player>
     fun remove()
 
-    /**
-     *
-     */
     fun refreshPlayers()
+    fun refreshPlayersForce()
 }
