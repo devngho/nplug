@@ -50,13 +50,13 @@ class FallingBlockImpl internal constructor(
         standEntity.setPos(position.x, position.y, position.z)
         entity.setPos(position.x, position.y, position.z)
         shulkerEntity?.setPos(position.x, position.y, position.z)
-        entity.startRiding(standEntity)
+        entity.startRiding(standEntity, true)
         if (collidable){
             shulkerEntity = Shulker(EntityType.SHULKER, (position.world as CraftWorld).handle)
             shulkerEntity!!.isInvisible = true
             shulkerEntity!!.isInvulnerable = true
             shulkerEntity!!.isNoAi = true
-            shulkerEntity!!.startRiding(standEntity)
+            shulkerEntity!!.startRiding(standEntity, true)
         }
         for (player in sendPlayers) {
             (player as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
