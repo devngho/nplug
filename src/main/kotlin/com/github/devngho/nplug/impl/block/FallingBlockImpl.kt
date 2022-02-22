@@ -90,45 +90,41 @@ class FallingBlockImpl internal constructor(
                 )
             )
             player.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
-            player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
-            if (collidable) player.handle.connection.send(ClientboundTeleportEntityPacket(shulkerEntity!!))
         }
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,{
-            if (standEntity.x != position.x || standEntity.y != position.y || standEntity.z != position.z) {
-                standEntity.setPos(position.x, position.y, position.z)
-                for (player in sendPlayers) {
-                    (player as CraftPlayer).handle.connection.send(
-                        ClientboundSetEntityDataPacket(
-                            standEntity.id,
-                            standEntity.entityData,
-                            true
-                        )
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+            standEntity.setPos(position.x, position.y, position.z)
+            for (player in sendPlayers) {
+                (player as CraftPlayer).handle.connection.send(
+                    ClientboundSetEntityDataPacket(
+                        standEntity.id,
+                        standEntity.entityData,
+                        true
                     )
-                    player.handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
-                    if (collidable) player.handle.connection.send(
-                        ClientboundSetEntityDataPacket(
-                            shulkerEntity!!.id,
-                            shulkerEntity!!.entityData,
-                            true
-                        )
+                )
+                player.handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
+                if (collidable) player.handle.connection.send(
+                    ClientboundSetEntityDataPacket(
+                        shulkerEntity!!.id,
+                        shulkerEntity!!.entityData,
+                        true
                     )
-                    player.handle.connection.send(
-                        ClientboundSetPassengersPacket(
-                            standEntity
-                        )
-                    )
-                    player.handle.connection.send(ClientboundSetPassengersPacket(
+                )
+                player.handle.connection.send(
+                    ClientboundSetPassengersPacket(
                         standEntity
-                    ))
-                    if (collidable) player.handle.connection.send(
-                        ClientboundSetPassengersPacket(
-                            standEntity
-                        )
                     )
-                    player.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
-                    player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
-                    if (collidable) player.handle.connection.send(ClientboundTeleportEntityPacket(shulkerEntity!!))
-                }
+                )
+                player.handle.connection.send(
+                    ClientboundSetPassengersPacket(
+                        standEntity
+                    )
+                )
+                if (collidable) player.handle.connection.send(
+                    ClientboundSetPassengersPacket(
+                        standEntity
+                    )
+                )
+                player.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
             }
         }, 0, Setting.FallingRefreshTicks.toLong())
     }
@@ -138,7 +134,7 @@ class FallingBlockImpl internal constructor(
         val list = IntList.of(entity.id, standEntity.id)
         if (collidable) list.add(shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
-        for (player in Bukkit.getOnlinePlayers()) {
+        for (player in sendPlayers) {
             (player as CraftPlayer).handle.connection.send(removePacket)
         }
     }
@@ -148,6 +144,33 @@ class FallingBlockImpl internal constructor(
             (it as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
             it.handle.connection.send(entity.addEntityPacket)
             if (collidable) it.handle.connection.send(shulkerEntity!!.addEntityPacket)
+            it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundSetPassengersPacket(
+                standEntity
+            ))
+            if (collidable) it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundSetPassengersPacket(
+                standEntity
+            ))
+            if (collidable) it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
         }
         val list = IntList.of(entity.id, standEntity.id)
         if (collidable) list.add(shulkerEntity!!.id)
@@ -164,6 +187,33 @@ class FallingBlockImpl internal constructor(
             (it as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
             it.handle.connection.send(entity.addEntityPacket)
             if (collidable) it.handle.connection.send(shulkerEntity!!.addEntityPacket)
+            it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundSetPassengersPacket(
+                standEntity
+            ))
+            if (collidable) it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundSetPassengersPacket(
+                standEntity
+            ))
+            if (collidable) it.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            it.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
         }
         val list = IntList.of(entity.id, standEntity.id)
         if (collidable) list.add(shulkerEntity!!.id)
