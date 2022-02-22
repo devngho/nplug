@@ -4,6 +4,7 @@ import com.github.devngho.nplug.api.block.FallingBlock
 import com.github.devngho.nplug.impl.Setting
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
 import net.minecraft.world.entity.EntityType
@@ -75,6 +76,19 @@ class FallingBlockImpl internal constructor(
                     standEntity
                 )
             )
+            player.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
+            player.handle.connection.send(ClientboundSetPassengersPacket(
+                standEntity
+            ))
+            if (collidable) player.handle.connection.send(
+                ClientboundSetPassengersPacket(
+                    standEntity
+                )
+            )
             player.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
             player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
             if (collidable) player.handle.connection.send(ClientboundTeleportEntityPacket(shulkerEntity!!))
@@ -84,6 +98,21 @@ class FallingBlockImpl internal constructor(
                 standEntity.setPos(position.x, position.y, position.z)
                 for (player in sendPlayers) {
                     (player as CraftPlayer).handle.connection.send(
+                        ClientboundSetEntityDataPacket(
+                            standEntity.id,
+                            standEntity.entityData,
+                            true
+                        )
+                    )
+                    player.handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
+                    if (collidable) player.handle.connection.send(
+                        ClientboundSetEntityDataPacket(
+                            shulkerEntity!!.id,
+                            shulkerEntity!!.entityData,
+                            true
+                        )
+                    )
+                    player.handle.connection.send(
                         ClientboundSetPassengersPacket(
                             standEntity
                         )
