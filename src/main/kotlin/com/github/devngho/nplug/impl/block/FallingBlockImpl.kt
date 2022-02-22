@@ -131,8 +131,8 @@ class FallingBlockImpl internal constructor(
 
     override fun remove() {
         Bukkit.getScheduler().cancelTask(taskID)
-        val list = IntList.of(entity.id, standEntity.id)
-        if (collidable) list.add(shulkerEntity!!.id)
+        var list = IntList.of(entity.id, standEntity.id)
+        if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         for (player in sendPlayers) {
             (player as CraftPlayer).handle.connection.send(removePacket)
@@ -172,8 +172,8 @@ class FallingBlockImpl internal constructor(
             )
             it.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
         }
-        val list = IntList.of(entity.id, standEntity.id)
-        if (collidable) list.add(shulkerEntity!!.id)
+        var list = IntList.of(entity.id, standEntity.id)
+        if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         sentPlayers.subtract(sendPlayers.toSet()).forEach {
             (it as CraftPlayer).handle.connection.send(removePacket)
@@ -215,8 +215,8 @@ class FallingBlockImpl internal constructor(
             )
             it.handle.connection.send(ClientboundTeleportEntityPacket(standEntity))
         }
-        val list = IntList.of(entity.id, standEntity.id)
-        if (collidable) list.add(shulkerEntity!!.id)
+        var list = IntList.of(entity.id, standEntity.id)
+        if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         sendPlayers.forEach {
             (it as CraftPlayer).handle.connection.send(removePacket)
