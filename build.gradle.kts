@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.devngho"
-version = "v0.1-alpha7"
+version = "v0.1-alpha8"
 
 repositories {
     mavenCentral()
@@ -21,9 +21,6 @@ java {
 }
 
 tasks {
-    jar {
-        this.archiveFileName.set("${project.name}-${project.version}.jar")
-    }
     assemble {
         dependsOn(reobfJar)
     }
