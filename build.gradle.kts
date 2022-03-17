@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.6.10"
-    id("io.papermc.paperweight.userdev") version "1.3.4"
+    id("io.papermc.paperweight.userdev") version "1.3.5"
     `maven-publish`
 }
 
@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    paperDevBundle("1.18.1-R0.1-SNAPSHOT")
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
 
 java {
