@@ -13,9 +13,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
-
-    implementation("org.reflections:reflections:0.10.2")
 
     paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
