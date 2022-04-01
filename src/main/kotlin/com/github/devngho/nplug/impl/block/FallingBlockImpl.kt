@@ -2,6 +2,10 @@ package com.github.devngho.nplug.impl.block
 
 import com.github.devngho.nplug.api.block.FallingBlock
 import com.github.devngho.nplug.impl.Setting
+import com.github.devngho.nplug.impl.nms.NMSVersion.handle
+import com.github.devngho.nplug.impl.nms.NMSVersion.toBlockState
+import com.github.devngho.nplug.impl.nms.NMSVersion.toServerLevel
+import com.github.devngho.nplug.impl.nms.NMSVersion.toServerPlayer
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
@@ -14,9 +18,6 @@ import net.minecraft.world.entity.monster.Shulker
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
-import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -28,9 +29,9 @@ class FallingBlockImpl internal constructor(
     override val sendPlayers: MutableList<Player>,
     private val sentPlayers: MutableList<Player>
 ) : FallingBlock {
-    private var standEntity: ArmorStand = ArmorStand((position.world as CraftWorld).handle, position.x, position.y, position.z)
+    private var standEntity: ArmorStand = ArmorStand(position.world.toServerLevel, position.x, position.y, position.z)
     private var entity: FallingBlockEntity =
-        FallingBlockEntity((position.world as CraftWorld).handle, position.x, position.y, position.z, (material.createBlockData() as CraftBlockData).state)
+        FallingBlockEntity(position.world.toServerLevel, position.x, position.y, position.z, material.createBlockData().toBlockState)
     private var shulkerEntity: Shulker? = null
     private var taskID: Int
 
@@ -53,14 +54,14 @@ class FallingBlockImpl internal constructor(
         shulkerEntity?.setPos(position.x, position.y, position.z)
         entity.startRiding(standEntity, true)
         if (collidable){
-            shulkerEntity = Shulker(EntityType.SHULKER, (position.world as CraftWorld).handle)
+            shulkerEntity = Shulker(EntityType.SHULKER, position.world.toServerLevel)
             shulkerEntity!!.isInvisible = true
             shulkerEntity!!.isInvulnerable = true
             shulkerEntity!!.isNoAi = true
             shulkerEntity!!.startRiding(standEntity, true)
         }
         for (player in sendPlayers) {
-            (player as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
+            player.handle.connection.send(standEntity.addEntityPacket)
             player.handle.connection.send(entity.addEntityPacket)
             if (collidable) player.handle.connection.send(shulkerEntity!!.addEntityPacket)
             player.handle.connection.send(
@@ -94,7 +95,7 @@ class FallingBlockImpl internal constructor(
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
             standEntity.setPos(position.x, position.y, position.z)
             for (player in sendPlayers) {
-                (player as CraftPlayer).handle.connection.send(
+                player.toServerPlayer.connection.send(
                     ClientboundSetEntityDataPacket(
                         standEntity.id,
                         standEntity.entityData,
@@ -135,13 +136,13 @@ class FallingBlockImpl internal constructor(
         if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         for (player in sendPlayers) {
-            (player as CraftPlayer).handle.connection.send(removePacket)
+            player.handle.connection.send(removePacket)
         }
     }
 
     override fun refreshPlayers() {
         sendPlayers.subtract(sentPlayers.toSet()).forEach {
-            (it as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
+            it.handle.connection.send(standEntity.addEntityPacket)
             it.handle.connection.send(entity.addEntityPacket)
             if (collidable) it.handle.connection.send(shulkerEntity!!.addEntityPacket)
             it.handle.connection.send(
@@ -176,7 +177,7 @@ class FallingBlockImpl internal constructor(
         if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         sentPlayers.subtract(sendPlayers.toSet()).forEach {
-            (it as CraftPlayer).handle.connection.send(removePacket)
+            it.toServerPlayer.connection.send(removePacket)
         }
         sentPlayers.clear()
         sendPlayers.forEach { sentPlayers.add(it) }
@@ -184,7 +185,7 @@ class FallingBlockImpl internal constructor(
 
     override fun refreshPlayersForce() {
         sendPlayers.forEach {
-            (it as CraftPlayer).handle.connection.send(standEntity.addEntityPacket)
+            it.handle.connection.send(standEntity.addEntityPacket)
             it.handle.connection.send(entity.addEntityPacket)
             if (collidable) it.handle.connection.send(shulkerEntity!!.addEntityPacket)
             it.handle.connection.send(
@@ -219,7 +220,7 @@ class FallingBlockImpl internal constructor(
         if (collidable) list = IntList.of(entity.id, standEntity.id, shulkerEntity!!.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
         sendPlayers.forEach {
-            (it as CraftPlayer).handle.connection.send(removePacket)
+            it.toServerPlayer.connection.send(removePacket)
         }
         sentPlayers.clear()
         sendPlayers.forEach { sentPlayers.add(it) }

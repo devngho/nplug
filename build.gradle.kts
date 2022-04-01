@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.devngho"
-version = "v0.1-alpha8"
+version = "v0.1-alpha7"
 
 repositories {
     mavenCentral()
@@ -13,6 +13,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
+
+    implementation("org.reflections:reflections:0.10.2")
+
     paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
 
@@ -21,6 +25,9 @@ java {
 }
 
 tasks {
+    jar {
+        this.archiveFileName.set("${project.name}-${project.version}.jar")
+    }
     assemble {
         dependsOn(reobfJar)
     }
