@@ -12,7 +12,7 @@ import kotlin.reflect.full.memberFunctions
 
 object NMSVersion {
     val nmsVersion by lazy {
-        Bukkit.getServer()::class.java.packageName.split("\\.")[3]
+        Bukkit.getServer()::class.java.packageName.split(".")[3]
     }
     val craftWorld by lazy {
         CraftClass.getClass(nmsVersion, "CraftWorld")
