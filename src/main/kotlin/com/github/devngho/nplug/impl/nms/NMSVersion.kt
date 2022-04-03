@@ -3,6 +3,7 @@ package com.github.devngho.nplug.impl.nms
 import com.github.devngho.nplug.nms.CraftClass
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -23,7 +24,7 @@ object NMSVersion {
     val craftPlayer by lazy {
         CraftClass.getClass(nmsVersion, "CraftPlayer")
     }
-    val World.toServerLevel: ServerLevel
+    val World.toServerLevel: Level
     get() {
         val casted = craftWorld.cast(this)
         return (casted)::class.memberFunctions.find { it.name == "getHandle" }?.call(casted) as ServerLevel
