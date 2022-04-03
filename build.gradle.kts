@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.6.10"
     id("io.papermc.paperweight.userdev") version "1.3.5"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     `maven-publish`
 }
 
@@ -12,8 +13,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
-    compileOnly(kotlin("reflect"))
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
 
     paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
@@ -25,6 +26,9 @@ java {
 tasks {
     assemble {
         dependsOn(reobfJar)
+    }
+    jar {
+        finalizedBy(shadowJar)
     }
 }
 
