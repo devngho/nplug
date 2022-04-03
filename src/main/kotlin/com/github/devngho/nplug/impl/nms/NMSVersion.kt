@@ -25,15 +25,18 @@ object NMSVersion {
     }
     val World.toServerLevel: ServerLevel
     get() {
-        return (craftWorld.cast(this))::class.memberFunctions.find { it.name == "getHandle" }?.call() as ServerLevel
+        val casted = craftWorld.cast(this)
+        return (casted)::class.memberFunctions.find { it.name == "getHandle" }?.call(casted) as ServerLevel
     }
     val BlockData.toBlockState: BlockState
         get() {
-            return (craftBlockData.cast(this))::class.memberFunctions.find { it.name == "getState" }?.call() as BlockState
+            val casted = craftBlockData.cast(this)
+            return (casted)::class.memberFunctions.find { it.name == "getState" }?.call(casted) as BlockState
         }
     val Player.toServerPlayer: ServerPlayer
         get() {
-            return (craftPlayer.cast(this))::class.memberFunctions.find { it.name == "getHandle" }?.call() as ServerPlayer
+            val casted = craftPlayer.cast(this)
+            return (casted)::class.memberFunctions.find { it.name == "getHandle" }?.call(casted) as ServerPlayer
         }
     val Player.handle: ServerPlayer
         get() {
