@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
+    compileOnly(kotlin("stdlib"))
+    compileOnly(kotlin("reflect"))
 
     paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
