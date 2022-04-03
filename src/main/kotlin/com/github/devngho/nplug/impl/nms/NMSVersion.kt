@@ -19,10 +19,10 @@ object NMSVersion {
         CraftClass.getClass(nmsVersion, "CraftWorld")
     }
     val craftBlockData by lazy {
-        CraftClass.getClass(nmsVersion, "CraftBlockData")
+        CraftClass.getClass(nmsVersion, "block.data.CraftBlockData")
     }
     val craftPlayer by lazy {
-        CraftClass.getClass(nmsVersion, "CraftPlayer")
+        CraftClass.getClass(nmsVersion, "entity.CraftPlayer")
     }
     val World.toServerLevel: Level
     get() {
