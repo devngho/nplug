@@ -43,7 +43,7 @@ tasks {
         if (!unzipFolder.exists()) unzipFolder.mkdir()
         downloadFile(uri("https://nightly.link/devngho/nplug/workflows/gradle/master/Package.zip").toURL(), folder.absolutePath + File.separator + "nplug.zip")
         unZip(folder.absolutePath + File.separator + "nplug.zip", unzipFolder.absolutePath)
-        unzipFolder.listFiles().find { it.nameWithoutExtension.endsWith("-dev") }?.copyTo(file(folder.absolutePath + File.separator + "nplug.jar"))
+        unzipFolder.listFiles().find { (!it.nameWithoutExtension.endsWith("-dev")) && (!it.nameWithoutExtension.endsWith("-all")) }?.copyTo(file(folder.absolutePath + File.separator + "nplug.jar"))
     }
 }
 ```

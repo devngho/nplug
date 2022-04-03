@@ -30,6 +30,9 @@ tasks {
     jar {
         finalizedBy(shadowJar)
     }
+    reobfJar {
+        outputJar.set(layout.buildDirectory.file("libs/nplug-${project.version}.jar"))
+    }
 }
 
 publishing {
