@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.devngho"
-version = "v0.1-alpha13"
+version = "v0.1-alpha14"
 
 repositories {
     mavenCentral()
