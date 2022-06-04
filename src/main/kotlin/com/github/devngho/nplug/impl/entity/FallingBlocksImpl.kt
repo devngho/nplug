@@ -1,7 +1,7 @@
-package com.github.devngho.nplug.impl.block
+package com.github.devngho.nplug.impl.entity
 
-import com.github.devngho.nplug.api.block.FallingBlock
-import com.github.devngho.nplug.api.block.FallingBlocks
+import com.github.devngho.nplug.api.entity.FallingBlock
+import com.github.devngho.nplug.api.entity.FallingBlocks
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.plugin.java.JavaPlugin

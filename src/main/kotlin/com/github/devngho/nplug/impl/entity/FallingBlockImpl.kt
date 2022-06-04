@@ -1,6 +1,6 @@
-package com.github.devngho.nplug.impl.block
+package com.github.devngho.nplug.impl.entity
 
-import com.github.devngho.nplug.api.block.FallingBlock
+import com.github.devngho.nplug.api.entity.FallingBlock
 import com.github.devngho.nplug.impl.Setting
 import com.github.devngho.nplug.impl.nms.NMSVersion.handle
 import com.github.devngho.nplug.impl.nms.NMSVersion.toBlockState
