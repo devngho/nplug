@@ -26,7 +26,7 @@ class ArmorstandImpl internal constructor(
     var entity: ArmorStand = ArmorStand(position.world.toServerLevel, position.x, position.y, position.z)
     val bukkitEntity: org.bukkit.entity.ArmorStand
     get() {
-        return this.entity.bukkitEntity.handle as org.bukkit.entity.ArmorStand
+        return (this.entity.bukkitEntity.handle) as org.bukkit.entity.ArmorStand
     }
     private var taskID: Int
 
