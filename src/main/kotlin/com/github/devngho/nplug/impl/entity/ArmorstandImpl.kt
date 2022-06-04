@@ -13,9 +13,11 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
 import net.minecraft.world.entity.decoration.ArmorStand
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
+@Suppress("unused")
 class ArmorstandImpl internal constructor(
     override var position: Location,
     override val plugin: JavaPlugin,
@@ -23,6 +25,10 @@ class ArmorstandImpl internal constructor(
     private val sentPlayers: MutableList<Player>
 ) : Armorstand {
     var entity: ArmorStand = ArmorStand(position.world.toServerLevel, position.x, position.y, position.z)
+    val bukkitEntity: CraftEntity
+    get() {
+        return this.entity.bukkitEntity
+    }
     private var taskID: Int
 
     companion object{
