@@ -62,6 +62,7 @@ class ArmorstandImpl internal constructor(
                     )
                 )
                 player.handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
+                entity.detectEquipmentUpdates()
                 player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
             }
         }, 0, Setting.FallingRefreshTicks.toLong())
@@ -80,6 +81,7 @@ class ArmorstandImpl internal constructor(
         sendPlayers.subtract(sentPlayers.toSet()).forEach {
             it.handle.connection.send(entity.addEntityPacket)
             it.handle.connection.send(ClientboundTeleportEntityPacket(entity))
+            entity.detectEquipmentUpdates()
         }
         val list = IntList.of(entity.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
@@ -94,6 +96,7 @@ class ArmorstandImpl internal constructor(
         sendPlayers.forEach {
             it.handle.connection.send(entity.addEntityPacket)
             it.handle.connection.send(ClientboundTeleportEntityPacket(entity))
+            entity.detectEquipmentUpdates()
         }
         val list = IntList.of(entity.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
