@@ -5,11 +5,14 @@ import com.github.devngho.nplug.impl.Setting
 import com.github.devngho.nplug.impl.nms.NMSVersion.handle
 import com.github.devngho.nplug.impl.nms.NMSVersion.toServerLevel
 import com.github.devngho.nplug.impl.nms.NMSVersion.toServerPlayer
+import com.mojang.datafixers.util.Pair
 import it.unimi.dsi.fastutil.ints.IntList
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.decoration.ArmorStand
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -50,6 +53,7 @@ class ArmorstandImpl internal constructor(
                 )
             )
             player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
+            player.handle.connection.send(ClientboundSetEquipmentPacket(entity.id, EquipmentSlot.values().map { Pair(it, entity.getItemBySlot(it)) }))
         }
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
             entity.setPos(position.x, position.y, position.z)
@@ -62,7 +66,7 @@ class ArmorstandImpl internal constructor(
                     )
                 )
                 player.handle.connection.send(ClientboundSetEntityDataPacket(entity.id, entity.entityData, true))
-                entity.detectEquipmentUpdates()
+                player.handle.connection.send(ClientboundSetEquipmentPacket(entity.id, EquipmentSlot.values().map { Pair(it, entity.getItemBySlot(it)) }))
                 player.handle.connection.send(ClientboundTeleportEntityPacket(entity))
             }
         }, 0, Setting.FallingRefreshTicks.toLong())
@@ -81,7 +85,7 @@ class ArmorstandImpl internal constructor(
         sendPlayers.subtract(sentPlayers.toSet()).forEach {
             it.handle.connection.send(entity.addEntityPacket)
             it.handle.connection.send(ClientboundTeleportEntityPacket(entity))
-            entity.detectEquipmentUpdates()
+            it.handle.connection.send(ClientboundSetEquipmentPacket(entity.id, EquipmentSlot.values().map { Pair(it, entity.getItemBySlot(it)) }))
         }
         val list = IntList.of(entity.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
@@ -96,7 +100,7 @@ class ArmorstandImpl internal constructor(
         sendPlayers.forEach {
             it.handle.connection.send(entity.addEntityPacket)
             it.handle.connection.send(ClientboundTeleportEntityPacket(entity))
-            entity.detectEquipmentUpdates()
+            it.handle.connection.send(ClientboundSetEquipmentPacket(entity.id, EquipmentSlot.values().map { Pair(it, entity.getItemBySlot(it)) }))
         }
         val list = IntList.of(entity.id)
         val removePacket = ClientboundRemoveEntitiesPacket(list)
