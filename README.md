@@ -4,27 +4,17 @@ Papermc 라이브러리
 - 구조물
 - 가상 FallingBlock, FallingBlock 묶음
 ## 불러오기
-다음 코드를 build.gradle.kts 에 넣어주세요. gradle task downloadPlug는 가장 마지막에 빌드된 nplug를 불러옵니다.
+다음 코드를 build.gradle.kts 에 넣어주세요.
 ```kotlin
-fun downloadFile(url: URL, fileName: String) {
-    url.openStream().use { Files.copy(it, Paths.get(fileName)) }
-}
-
-fun unZip(zipFilePath: String, targetPath: String) {
-    ZipFile(zipFilePath).use { zip ->
-        zip.entries().asSequence().forEach { entry ->
-            zip.getInputStream(entry).use { input ->
-                File(targetPath, entry.name).outputStream().use { output ->
-                    input.copyTo(output)
-                }
-            }
-        }
-    }
+repositories {
+	//...
+	maven { url 'https://jitpack.io' }
 }
 ```
 ``` kotlin
 dependencies {
-    implementation(files("lib/nplug.jar"))
+    //...
+    implementation("com.github.devngho:nplug:[VERSION]")
 }
 ```
 ``` kotlin
